@@ -48,6 +48,7 @@ import com.itsm.system.controller.AuthRestController;
 import com.itsm.system.controller.IncidentRestController;
 import com.itsm.system.controller.IntelligenceRestController;
 import com.itsm.system.controller.NotificationRestController;
+import com.itsm.system.controller.PublicPortalRestController;
 import com.itsm.system.controller.SystemLookupRestController;
 import com.itsm.system.dto.ApiResponse;
 import com.itsm.system.dto.FeedbackRequest;
@@ -144,6 +145,9 @@ class ItsmApplicationTests {
 
     @Autowired
     private SystemLookupRestController systemLookupRestController;
+
+    @Autowired
+    private PublicPortalRestController publicPortalRestController;
 
     @Test
     @DisplayName("Context loads and seed data is populated")
@@ -1418,5 +1422,178 @@ class ItsmApplicationTests {
         boolean hasAutoClassifyAudit = logs.stream().anyMatch(l ->
                 l.getDescription().contains("Auto-classified Impact=LOW") && l.getDescription().contains("Urgency=LOW"));
         assertTrue(hasAutoClassifyAudit, "Audit log must record auto-classification decision");
+    }
+
+    @Test
+    @DisplayName("Public Portal: /api/public/summary returns live services, duplicate cluster, and strictly consistent SLA metrics")
+    void testPublicPortalSummaryEndpoint() {
+        ApiResponse<java.util.Map<String, Object>> response = publicPortalRestController.getPublicSummary();
+        assertNotNull(response);
+        assertTrue(response.isSuccess());
+        java.util.Map<String, Object> data = response.getData();
+        assertNotNull(data);
+
+        // 1. Services health
+        assertTrue(data.containsKey("services"));
+        @SuppressWarnings("unchecked")
+        List<java.util.Map<String, Object>> services = (List<java.util.Map<String, Object>>) data.get("services");
+        assertNotNull(services);
+        assertFalse(services.isEmpty(), "Seed services must be returned");
+        assertTrue(services.size() <= 4, "Top services capped at 4");
+        long totalResolved = 0;
+        for (java.util.Map<String, Object> svc : services) {
+            assertNotNull(svc.get("serviceCode"));
+            assertNotNull(svc.get("name"));
+            assertNotNull(svc.get("status"));
+            assertNotNull(svc.get("resolvedCount"), "resolvedCount must be present");
+            long resCount = ((Number) svc.get("resolvedCount")).longValue();
+            assertTrue(resCount >= 0);
+            totalResolved += resCount;
+            assertTrue(List.of("Operational", "Warning", "Degraded").contains(svc.get("status")),
+                    "Status must be Operational, Warning, or Degraded: " + svc.get("status"));
+        }
+        assertTrue(totalResolved > 0, "Total resolvedCount across services must be > 0");
+
+        // Verify that seeded services with closed incidents have resolvedCount > 0
+        java.util.Map<String, Long> resolvedByCode = new java.util.HashMap<>();
+        for (java.util.Map<String, Object> svc : services) {
+            resolvedByCode.put((String) svc.get("serviceCode"), ((Number) svc.get("resolvedCount")).longValue());
+        }
+        if (resolvedByCode.containsKey("SVC-PAY")) {
+            assertTrue(resolvedByCode.get("SVC-PAY") > 0, "SVC-PAY must have non-zero resolvedCount");
+        }
+        if (resolvedByCode.containsKey("SVC-AUTH")) {
+            assertTrue(resolvedByCode.get("SVC-AUTH") > 0, "SVC-AUTH must have non-zero resolvedCount");
+        }
+        if (resolvedByCode.containsKey("SVC-NET")) {
+            assertTrue(resolvedByCode.get("SVC-NET") > 0, "SVC-NET must have non-zero resolvedCount");
+        }
+        if (resolvedByCode.containsKey("SVC-CLOUD")) {
+            assertTrue(resolvedByCode.get("SVC-CLOUD") > 0, "SVC-CLOUD must have non-zero resolvedCount");
+        }
+
+        // 2. Duplicate cluster
+        assertTrue(data.containsKey("duplicateCluster"));
+        @SuppressWarnings("unchecked")
+        java.util.Map<String, Object> cluster = (java.util.Map<String, Object>) data.get("duplicateCluster");
+        assertNotNull(cluster);
+        assertTrue((Integer) cluster.get("totalLinkedDuplicates") >= 0);
+
+        // 3. SLA metrics
+        assertTrue(data.containsKey("slaMetrics"));
+        @SuppressWarnings("unchecked")
+        java.util.Map<String, Object> sla = (java.util.Map<String, Object>) data.get("slaMetrics");
+        assertNotNull(sla);
+        int totalTracked = (Integer) sla.get("totalTracked");
+        int onTrackCount = (Integer) sla.get("onTrackCount");
+        int atRiskCount = (Integer) sla.get("atRiskCount");
+        int breachedCount = (Integer) sla.get("breachedCount");
+        assertTrue(totalTracked >= 0);
+        assertTrue(onTrackCount >= 0);
+        assertTrue(atRiskCount >= 0);
+        assertTrue(breachedCount >= 0);
+
+        int compliance = (Integer) sla.get("compliancePercent");
+        int breach = (Integer) sla.get("breachPercent");
+        assertEquals(100, compliance + breach, "compliancePercent + breachPercent must equal 100%");
+
+        @SuppressWarnings("unchecked")
+        List<String> onTrackCodes = (List<String>) sla.get("onTrackCodes");
+        @SuppressWarnings("unchecked")
+        List<String> breachedCodes = (List<String>) sla.get("breachedCodes");
+        assertNotNull(onTrackCodes);
+        assertNotNull(breachedCodes);
+
+        // Crucial requirement: onTrackCodes and breachedCodes must NEVER overlap!
+        for (String code : onTrackCodes) {
+            assertFalse(breachedCodes.contains(code),
+                    "onTrackCodes and breachedCodes must be strictly disjoint! Overlapping code: " + code);
+        }
+
+        // 4. Incident Volume & Resolution Trend
+        assertTrue(data.containsKey("incidentTrend"));
+        @SuppressWarnings("unchecked")
+        java.util.Map<String, Object> trend = (java.util.Map<String, Object>) data.get("incidentTrend");
+        assertNotNull(trend);
+        assertEquals(14L, ((Number) trend.get("totalReported")).longValue());
+        assertEquals(5L, ((Number) trend.get("totalResolved")).longValue());
+        assertTrue(((Number) trend.get("resolutionRate")).longValue() >= 0);
+
+        @SuppressWarnings("unchecked")
+        List<java.util.Map<String, Object>> buckets = (List<java.util.Map<String, Object>>) trend.get("buckets");
+        assertNotNull(buckets);
+        assertEquals(6, buckets.size(), "Must contain exactly 6 two-hour buckets");
+        long sumReported = 0;
+        long sumResolved = 0;
+        for (java.util.Map<String, Object> b : buckets) {
+            assertNotNull(b.get("label"));
+            long rep = ((Number) b.get("reportedCount")).longValue();
+            long res = ((Number) b.get("resolvedCount")).longValue();
+            assertTrue(rep >= 0);
+            assertTrue(res >= 0);
+            sumReported += rep;
+            sumResolved += res;
+        }
+        assertEquals(14L, sumReported, "Sum of reported in buckets must match totalReported");
+        assertEquals(5L, sumResolved, "Sum of resolved in buckets must match totalResolved");
+    }
+
+    @Test
+    @DisplayName("Public Portal: /api/public/search directly looks up tickets by Incident Code")
+    void testPublicPortalSearchDirectTicket() {
+        List<Incident> all = incidentRepository.findAll();
+        assertFalse(all.isEmpty(), "Incidents must exist from seeding");
+        Incident sample = all.get(0);
+
+        ApiResponse<java.util.Map<String, Object>> response = publicPortalRestController.searchPublic(sample.getIncidentCode());
+        assertNotNull(response);
+        assertTrue(response.isSuccess());
+        java.util.Map<String, Object> data = response.getData();
+        assertNotNull(data);
+        assertEquals("TICKET", data.get("type"));
+
+        @SuppressWarnings("unchecked")
+        java.util.Map<String, Object> ticket = (java.util.Map<String, Object>) data.get("ticket");
+        assertNotNull(ticket);
+        assertEquals(sample.getIncidentCode(), ticket.get("incidentCode"));
+        assertEquals(sample.getTitle(), ticket.get("title"));
+    }
+
+    @Test
+    @DisplayName("Public Portal: /api/public/search returns matching knowledge base solutions and active matches for natural language queries")
+    void testPublicPortalSearchKnowledgeAndActive() {
+        ApiResponse<java.util.Map<String, Object>> response = publicPortalRestController.searchPublic("vpn connection authentication drop");
+        assertNotNull(response);
+        assertTrue(response.isSuccess());
+        java.util.Map<String, Object> data = response.getData();
+        assertNotNull(data);
+        assertEquals("KNOWLEDGE", data.get("type"));
+
+        @SuppressWarnings("unchecked")
+        List<java.util.Map<String, Object>> matchedSolutions = (List<java.util.Map<String, Object>>) data.get("matchedSolutions");
+        assertNotNull(matchedSolutions);
+
+        @SuppressWarnings("unchecked")
+        List<java.util.Map<String, Object>> activeMatches = (List<java.util.Map<String, Object>>) data.get("activeMatches");
+        assertNotNull(activeMatches);
+    }
+
+    @Test
+    @DisplayName("Public Portal: /api/public/knowledge-base returns verified resolutions from closed incidents")
+    void testPublicPortalKnowledgeBaseEndpoint() {
+        ApiResponse<List<java.util.Map<String, Object>>> response = publicPortalRestController.getKnowledgeBase();
+        assertNotNull(response);
+        assertTrue(response.isSuccess());
+        List<java.util.Map<String, Object>> list = response.getData();
+        assertNotNull(list);
+        assertFalse(list.isEmpty(), "Closed seed incidents with resolutions must be present");
+
+        for (java.util.Map<String, Object> item : list) {
+            assertNotNull(item.get("incidentCode"));
+            assertNotNull(item.get("title"));
+            assertNotNull(item.get("serviceCode"));
+            assertNotNull(item.get("resolutionDetails"));
+            assertTrue(item.get("resolutionDetails").toString().trim().length() > 0, "Resolution details must not be empty");
+        }
     }
 }

@@ -17,7 +17,7 @@
     <!-- Instant Theme Initializer (Prevents Theme Flash) -->
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('itsm_theme') || 'light';
+            const savedTheme = localStorage.getItem('itsm_theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();
     </script>
@@ -25,122 +25,286 @@
 <body>
 
     <!-- ========================================================================= -->
-    <!-- 1. TRADITIONAL LOGIN VIEW (5A Choice 2)                                   -->
+    <!-- 0. LIVE PUBLIC FRONT PAGE (#landingView)                                 -->
     <!-- ========================================================================= -->
-    <div id="loginView" class="login-wrapper position-relative">
-        <!-- Login Theme Toggle Button -->
-        <div class="position-absolute top-0 end-0 p-3">
-            <button id="loginThemeToggleBtn" class="btn btn-sm btn-outline-secondary theme-toggle-btn" type="button" title="Toggle Light / Dark Mode">
-                <i class="bi bi-moon me-1"></i> <span class="theme-label">Dark</span>
-            </button>
-        </div>
+    <div id="landingView">
+        <!-- Interactive Background Hairline Grid Spotlight -->
+        <div id="landingGridSpotlight" aria-hidden="true"></div>
 
-        <div class="login-card">
-            <div class="text-center mb-4">
-                <div class="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded mb-3" style="width: 40px; height: 40px;">
-                    <i class="bi bi-shield-check fs-4"></i>
-                </div>
-                <h4 class="fw-bold mb-1">I-ITSM Enterprise</h4>
-                <p class="text-muted fs-sm mb-0">Intelligent IT Service Management & Resolution Platform</p>
+        <!-- Top Navigation Bar -->
+        <header class="landing-navbar">
+            <div class="d-flex align-items-center">
+                <a href="#" class="landing-brand" onclick="return false;">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded" style="width: 32px; height: 32px;">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <span>I-ITSM Enterprise</span>
+                </a>
             </div>
-
-            <div id="loginAlert" class="alert alert-danger py-2 fs-sm d-none" role="alert"></div>
-
-            <form id="loginForm" onsubmit="return false;">
-                <div class="mb-3">
-                    <label for="loginUserId" class="form-label fs-sm fw-medium">User ID Code or Corporate Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" class="form-control" id="loginUserId" placeholder="e.g., E101, T101, A001" required>
-                        <input type="hidden" id="loginIdentifier">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label for="loginPassword" class="form-label fs-sm fw-medium">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
-                    </div>
-                </div>
-                <button type="submit" id="loginSubmitBtn" class="btn btn-primary w-100 fw-medium py-2">
-                    Sign In to I-ITSM
+            <div class="d-flex align-items-center gap-2">
+                <button id="landingThemeToggleBtn" class="btn btn-sm btn-outline-secondary theme-toggle-btn" type="button" title="Toggle Light / Dark Mode">
+                    <i class="bi bi-sun me-1"></i> <span class="theme-label">Light</span>
                 </button>
-            </form>
+                <button id="landingSignInBtn" class="landing-signin-btn" type="button">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                </button>
+            </div>
+        </header>
 
-            <div class="mt-4 pt-3 border-top">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="fw-semibold text-secondary fs-xs text-uppercase tracking-wider">Demo Reference Credentials</span>
-                    <span class="badge bg-light text-secondary border fs-xs">Live Testing Accounts</span>
+        <!-- Main Landing Content Container -->
+        <div class="landing-content-container">
+            <!-- Centered Hero Section -->
+            <section class="landing-hero">
+                <h1>Resolve IT Incidents<br>Before They Escalate</h1>
+                <p>Intelligent IT Service Management & Resolution Platform</p>
+                <div class="landing-action-btns">
+                    <button id="heroSignInBtn" class="btn-portal-primary" type="button">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Sign In to I-ITSM
+                    </button>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-sm demo-credentials-table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Role</th>
-                                <th>ID</th>
-                                <th>Name / Specialty</th>
-                                <th class="text-end">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="badge bg-primary fs-xs">Employee</span></td>
-                                <td class="font-mono fw-semibold">E101</td>
-                                <td>Alice Johnson (Finance)</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('E101', 'password123')">Fill</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-primary fs-xs">Employee</span></td>
-                                <td class="font-mono fw-semibold">E102</td>
-                                <td>Bob Smith (Marketing)</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('E102', 'password123')">Fill</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-primary fs-xs">Employee</span></td>
-                                <td class="font-mono fw-semibold">E103</td>
-                                <td>Priya Patel (Operations & HR)</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('E103', 'password123')">Fill</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-info text-dark fs-xs">Technician</span></td>
-                                <td class="font-mono fw-semibold">T101</td>
-                                <td>Charlie Davis (Network/Cloud)</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('T101', 'password123')">Fill</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-info text-dark fs-xs">Technician</span></td>
-                                <td class="font-mono fw-semibold">T102</td>
-                                <td>Diana Prince (Database/Apps)</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('T102', 'password123')">Fill</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-info text-dark fs-xs">Technician</span></td>
-                                <td class="font-mono fw-semibold">T103</td>
-                                <td>Evan Wright (Hardware/Auth)</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('T103', 'password123')">Fill</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-danger fs-xs">Administrator</span></td>
-                                <td class="font-mono fw-semibold">A001</td>
-                                <td>Sarah Connor (System Admin)</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('A001', 'adminPassword123')">Fill</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            </section>
+
+            <!-- Bottom 3-Card Live Bento Grid -->
+            <section class="landing-bento-grid">
+                <!-- Card 1: Live Service Health -->
+                <div class="bento-card">
+                    <div class="bento-card-header d-flex align-items-center justify-content-between gap-3">
+                        <h3 class="bento-card-title mb-0" style="white-space: nowrap;">Live Service Health</h3>
+                        <div class="service-chart-legend d-flex align-items-center gap-3">
+                            <span class="legend-item"><span class="legend-dot dot-active"></span>Active</span>
+                            <span class="legend-item"><span class="legend-dot dot-resolved"></span>Resolved</span>
+                        </div>
+                    </div>
+                    <div id="bentoServiceHealthList" class="flex-grow-1 d-flex flex-column justify-content-between position-relative">
+                        <div class="text-center py-4 text-muted fs-xs">
+                            <span class="spinner-border spinner-border-sm me-1"></span> Loading live services...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Incident Volume & Resolution Trend -->
+                <div class="bento-card">
+                    <div class="bento-card-header d-flex align-items-center justify-content-between gap-3">
+                        <h3 class="bento-card-title mb-0" style="white-space: nowrap;">Incident Volume & Resolution</h3>
+                        <div class="trend-chart-legend d-flex align-items-center gap-3">
+                            <span class="legend-item"><span class="legend-dot dot-reported"></span>Reported</span>
+                            <span class="legend-item"><span class="legend-dot dot-resolved-trend"></span>Resolved</span>
+                        </div>
+                    </div>
+                    <div id="bentoIncidentTrend" class="flex-grow-1 d-flex flex-column justify-content-between position-relative">
+                        <div class="text-center py-4 text-muted fs-xs">
+                            <span class="spinner-border spinner-border-sm me-1"></span> Loading trend data...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Automated SLA Tracking -->
+                <div class="bento-card">
+                    <div class="bento-card-header">
+                        <h3 class="bento-card-title">Automated SLA Tracking</h3>
+                    </div>
+                    <div id="bentoSlaGauges" class="flex-grow-1 d-flex flex-column justify-content-center">
+                        <div class="text-center py-4 text-muted fs-xs">
+                            <span class="spinner-border spinner-border-sm me-1"></span> Calculating SLA metrics...
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 1. SIGN IN POPUP MODAL (#signInModal)                                     -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+            <div class="modal-content border">
+                <div class="modal-header py-3 px-4 border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded" style="width: 32px; height: 32px;">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0 lh-1" id="signInModalLabel">Sign In to I-ITSM</h5>
+                            <span class="fs-xs text-muted">Enterprise IT Incident Management Portal</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <div id="loginAlert" class="alert alert-danger py-2 fs-sm d-none" role="alert"></div>
+
+                    <!-- Main Authentication Form -->
+                    <form id="loginForm" onsubmit="return false;">
+                        <div class="mb-3">
+                            <label for="loginUserId" class="form-label fs-xs fw-semibold text-uppercase text-secondary">User ID Code or Corporate Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="loginUserId" placeholder="e.g., E101, T101, A001" required autocomplete="username">
+                                <input type="hidden" id="loginIdentifier">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label fs-xs fw-semibold text-uppercase text-secondary">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn" title="Toggle password visibility">
+                                    <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" id="loginSubmitBtn" class="btn btn-primary w-100 fw-semibold py-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to I-ITSM
+                        </button>
+                    </form>
+
+                    <!-- Role-Grouped Account Selector -->
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-secondary fs-xs text-uppercase tracking-wider">Demo Account Selector</span>
+                            <span class="badge bg-subtle text-secondary border fs-xs">One-Click Testing</span>
+                        </div>
+
+                        <!-- 3 Crisp Tabs -->
+                        <ul class="nav nav-tabs nav-fill mb-3" id="demoRoleTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active py-2 fs-xs fw-semibold" id="tabEmployeesBtn" data-bs-toggle="tab" data-bs-target="#tabEmployees" type="button" role="tab" aria-controls="tabEmployees" aria-selected="true">
+                                    <i class="bi bi-people me-1"></i> Employees (3)
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2 fs-xs fw-semibold" id="tabTechniciansBtn" data-bs-toggle="tab" data-bs-target="#tabTechnicians" type="button" role="tab" aria-controls="tabTechnicians" aria-selected="false">
+                                    <i class="bi bi-wrench-adjustable me-1"></i> Technicians (3)
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2 fs-xs fw-semibold" id="tabAdminBtn" data-bs-toggle="tab" data-bs-target="#tabAdmin" type="button" role="tab" aria-controls="tabAdmin" aria-selected="false">
+                                    <i class="bi bi-shield-lock me-1"></i> Admin (1)
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="demoRoleTabContent">
+                            <!-- Employees Tab -->
+                            <div class="tab-pane fade show active" id="tabEmployees" role="tabpanel" aria-labelledby="tabEmployeesBtn">
+                                <div class="d-flex flex-column gap-2">
+                                    <!-- E101 -->
+                                    <div class="d-flex align-items-center justify-content-between p-2 rounded border modal-account-row">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono fw-bold fs-xs">E101</span>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold fs-xs text-primary text-truncate">Alice Johnson</div>
+                                                <div class="text-muted fs-xs text-truncate">Finance &bull; FinOps Analyst</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fs-xs" onclick="fillLoginForm('E101', 'password123')">Fill</button>
+                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fs-xs" onclick="quickLogin('E101', 'password123')">Sign In</button>
+                                        </div>
+                                    </div>
+                                    <!-- E102 -->
+                                    <div class="d-flex align-items-center justify-content-between p-2 rounded border modal-account-row">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono fw-bold fs-xs">E102</span>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold fs-xs text-primary text-truncate">Bob Smith</div>
+                                                <div class="text-muted fs-xs text-truncate">Marketing &bull; DevOps Engineer</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fs-xs" onclick="fillLoginForm('E102', 'password123')">Fill</button>
+                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fs-xs" onclick="quickLogin('E102', 'password123')">Sign In</button>
+                                        </div>
+                                    </div>
+                                    <!-- E103 -->
+                                    <div class="d-flex align-items-center justify-content-between p-2 rounded border modal-account-row">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono fw-bold fs-xs">E103</span>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold fs-xs text-primary text-truncate">Priya Patel</div>
+                                                <div class="text-muted fs-xs text-truncate">Operations &bull; HR Specialist</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fs-xs" onclick="fillLoginForm('E103', 'password123')">Fill</button>
+                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fs-xs" onclick="quickLogin('E103', 'password123')">Sign In</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Technicians Tab -->
+                            <div class="tab-pane fade" id="tabTechnicians" role="tabpanel" aria-labelledby="tabTechniciansBtn">
+                                <div class="d-flex flex-column gap-2">
+                                    <!-- T101 -->
+                                    <div class="d-flex align-items-center justify-content-between p-2 rounded border modal-account-row">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle font-mono fw-bold fs-xs">T101</span>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold fs-xs text-primary text-truncate">Charlie Davis (6 yrs exp)</div>
+                                                <div class="text-muted fs-xs text-truncate font-mono">Skills: NETWORK, CLOUD, SECURITY</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fs-xs" onclick="fillLoginForm('T101', 'password123')">Fill</button>
+                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fs-xs" onclick="quickLogin('T101', 'password123')">Sign In</button>
+                                        </div>
+                                    </div>
+                                    <!-- T102 -->
+                                    <div class="d-flex align-items-center justify-content-between p-2 rounded border modal-account-row">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle font-mono fw-bold fs-xs">T102</span>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold fs-xs text-primary text-truncate">Diana Prince (4 yrs exp)</div>
+                                                <div class="text-muted fs-xs text-truncate font-mono">Skills: DATABASE, APPLICATION, SOFTWARE</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fs-xs" onclick="fillLoginForm('T102', 'password123')">Fill</button>
+                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fs-xs" onclick="quickLogin('T102', 'password123')">Sign In</button>
+                                        </div>
+                                    </div>
+                                    <!-- T103 -->
+                                    <div class="d-flex align-items-center justify-content-between p-2 rounded border modal-account-row">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle font-mono fw-bold fs-xs">T103</span>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold fs-xs text-primary text-truncate">Evan Wright (3 yrs exp)</div>
+                                                <div class="text-muted fs-xs text-truncate font-mono">Skills: HARDWARE, AUTH, STORAGE</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fs-xs" onclick="fillLoginForm('T103', 'password123')">Fill</button>
+                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fs-xs" onclick="quickLogin('T103', 'password123')">Sign In</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Admin Tab -->
+                            <div class="tab-pane fade" id="tabAdmin" role="tabpanel" aria-labelledby="tabAdminBtn">
+                                <div class="d-flex flex-column gap-2">
+                                    <!-- A001 -->
+                                    <div class="d-flex align-items-center justify-content-between p-2 rounded border modal-account-row">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono fw-bold fs-xs">A001</span>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold fs-xs text-primary text-truncate">Sarah Connor</div>
+                                                <div class="text-muted fs-xs text-truncate">System Administrator (Full Privileges)</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fs-xs" onclick="fillLoginForm('A001', 'adminPassword123')">Fill</button>
+                                            <button type="button" class="btn btn-sm btn-primary py-1 px-2 fs-xs" onclick="quickLogin('A001', 'adminPassword123')">Sign In</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

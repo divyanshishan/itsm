@@ -123,9 +123,9 @@ public class DemoScenarioSeeder implements CommandLineRunner {
         // =====================================================================================
 
         // 1. Payment Gateway Historical Fix #1 (90%+ match for active payment issue)
-        LocalDateTime t1Created = now.minusDays(5);
+        LocalDateTime t1Created = now.minusHours(11).minusMinutes(20);
         LocalDateTime t1Ack = t1Created.plusMinutes(3);
-        LocalDateTime t1Closed = t1Created.plusMinutes(24);
+        LocalDateTime t1Closed = t1Created.plusMinutes(45);
         Incident inc1 = new Incident(
                 "INC-1001",
                 "Payment gateway connection reset and checkout API timeout error",
@@ -152,8 +152,8 @@ public class DemoScenarioSeeder implements CommandLineRunner {
         saveIncidentAndNotifications(inc1, "Incident Resolved and Closed: INC-1001", NotificationEventType.INCIDENT_RESOLVED_CLOSED);
 
         // 2. Payment Gateway Historical Fix #2 (Partial ~55% match for ranking)
-        LocalDateTime t2Created = now.minusDays(4);
-        LocalDateTime t2Closed = t2Created.plusMinutes(75);
+        LocalDateTime t2Created = now.minusHours(9).minusMinutes(15);
+        LocalDateTime t2Closed = t2Created.plusMinutes(50);
         Incident inc2 = new Incident(
                 "INC-1002",
                 "Checkout payment transaction deadlock in billing database",
@@ -179,7 +179,7 @@ public class DemoScenarioSeeder implements CommandLineRunner {
         saveIncidentAndNotifications(inc2, "Incident Resolved and Closed: INC-1002", NotificationEventType.INCIDENT_RESOLVED_CLOSED);
 
         // 3. VPN & Core Network Historical Fix (Powers Feature G for T101)
-        LocalDateTime t3Created = now.minusDays(3);
+        LocalDateTime t3Created = now.minusHours(7).minusMinutes(30);
         LocalDateTime t3Closed = t3Created.plusMinutes(55);
         Incident inc3 = new Incident(
                 "INC-1003",
@@ -206,8 +206,8 @@ public class DemoScenarioSeeder implements CommandLineRunner {
         saveIncidentAndNotifications(inc3, "Incident Resolved and Closed: INC-1003", NotificationEventType.INCIDENT_RESOLVED_CLOSED);
 
         // 4. Cloud / Kubernetes Historical Fix (Powers Feature G for T101)
-        LocalDateTime t4Created = now.minusDays(2);
-        LocalDateTime t4Closed = t4Created.plusMinutes(80);
+        LocalDateTime t4Created = now.minusHours(5).minusMinutes(10);
+        LocalDateTime t4Closed = t4Created.plusMinutes(40);
         Incident inc4 = new Incident(
                 "INC-1004",
                 "Kubernetes ingress controller 502 Bad Gateway pod eviction",
@@ -233,8 +233,8 @@ public class DemoScenarioSeeder implements CommandLineRunner {
         saveIncidentAndNotifications(inc4, "Incident Resolved and Closed: INC-1004", NotificationEventType.INCIDENT_RESOLVED_CLOSED);
 
         // 5. Active Directory / SSO Historical Fix (Powers Feature G for T103)
-        LocalDateTime t5Created = now.minusDays(1);
-        LocalDateTime t5Closed = t5Created.plusMinutes(65);
+        LocalDateTime t5Created = now.minusHours(3).minusMinutes(25);
+        LocalDateTime t5Closed = t5Created.plusMinutes(45);
         Incident inc5 = new Incident(
                 "INC-1005",
                 "Single Sign-On SAML token expiration and Active Directory lockout",

@@ -141,6 +141,13 @@ public class Incident {
         this.escalated = false;
     }
 
+    @jakarta.persistence.PrePersist
+    protected void onPrePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+
     // Parameterized constructor
     public Incident(String incidentCode, String title, String description, Employee reporter,
                     IncidentCategory category, ItService affectedService, ImpactLevel impact,
