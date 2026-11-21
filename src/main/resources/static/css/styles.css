@@ -1,0 +1,870 @@
+/* ==========================================================================
+   I-ITSM Enterprise Visual Design System (Option V3: Dual Theme System)
+   Default: Stripe / Vercel Crisp Light
+   Dark:    Linear / Raycast High-Contrast Command-Center Dark
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties / Design Tokens
+   -------------------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+    --bg-canvas: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-subtle: #F1F5F9;
+    --bg-hover: #F8FAFC;
+    --border-subtle: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --accent-primary: #1E3A8A; /* Deep Enterprise Navy */
+    --accent-hover: #1D4ED8;
+    --sidebar-bg: #0F172A;
+    --sidebar-text: #E2E8F0;
+
+    /* Semantic Status Pills (Light Mode) */
+    --status-open-bg: #E0F2FE;
+    --status-open-text: #0284C7;
+    --status-open-border: #BAE6FD;
+
+    --status-progress-bg: #EFF6FF;
+    --status-progress-text: #2563EB;
+    --status-progress-border: #BFDBFE;
+
+    --status-closed-bg: #ECFDF5;
+    --status-closed-text: #059669;
+    --status-closed-border: #A7F3D0;
+
+    /* Priority Badges (Light Mode) */
+    --p1-bg: #FEF2F2;
+    --p1-text: #DC2626;
+    --p1-border: #FECACA;
+
+    --p2-bg: #FFFBEB;
+    --p2-text: #D97706;
+    --p2-border: #FDE68A;
+
+    --p3-bg: #EFF6FF;
+    --p3-text: #2563EB;
+    --p3-border: #BFDBFE;
+
+    --p4-bg: #F1F5F9;
+    --p4-text: #475569;
+    --p4-border: #CBD5E1;
+
+    /* SLA Badges (Light Mode) */
+    --sla-ontrack-bg: #ECFDF5;
+    --sla-ontrack-text: #059669;
+    --sla-ontrack-border: #A7F3D0;
+
+    --sla-atrisk-bg: #FFFBEB;
+    --sla-atrisk-text: #D97706;
+    --sla-atrisk-border: #FDE68A;
+
+    --sla-breach-bg: #FEF2F2;
+    --sla-breach-text: #DC2626;
+    --sla-breach-border: #FCA5A5;
+
+    /* Duplicate Cluster Pill */
+    --dup-bg: #FAF5FF;
+    --dup-text: #7C3AED;
+    --dup-border: #DDD6FE;
+
+    /* Table Tokens */
+    --th-bg: #F8FAFC;
+    --th-text: #475569;
+    --th-border: #E2E8F0;
+    --tr-hover: #F1F5F9;
+    --tr-active: #E2E8F0;
+
+    /* Backward compatibility aliases */
+    --itsm-primary: var(--accent-primary);
+    --itsm-primary-dark: #0F172A;
+    --itsm-accent: #2563EB;
+    --itsm-bg: var(--bg-canvas);
+    --itsm-border: var(--border-subtle);
+    --itsm-text: var(--text-primary);
+    --itsm-muted: var(--text-muted);
+    --sidebar-width: 250px;
+}
+
+[data-theme="dark"] {
+    --bg-canvas: #0B0F19;
+    --bg-surface: #111827;
+    --bg-subtle: #1E293B;
+    --bg-hover: #1F2937;
+    --border-subtle: #1E293B;
+    --border-strong: #334155;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --accent-primary: #3B82F6;
+    --accent-hover: #60A5FA;
+    --sidebar-bg: #070A12;
+    --sidebar-text: #F1F5F9;
+
+    /* Semantic Status Pills (Dark Mode) */
+    --status-open-bg: rgba(2, 132, 199, 0.16);
+    --status-open-text: #38BDF8;
+    --status-open-border: rgba(56, 189, 248, 0.35);
+
+    --status-progress-bg: rgba(37, 99, 235, 0.16);
+    --status-progress-text: #60A5FA;
+    --status-progress-border: rgba(96, 165, 250, 0.35);
+
+    --status-closed-bg: rgba(5, 150, 105, 0.16);
+    --status-closed-text: #34D399;
+    --status-closed-border: rgba(52, 211, 153, 0.35);
+
+    /* Priority Badges (Dark Mode) */
+    --p1-bg: rgba(220, 38, 38, 0.16);
+    --p1-text: #F87171;
+    --p1-border: rgba(248, 113, 113, 0.35);
+
+    --p2-bg: rgba(217, 119, 6, 0.16);
+    --p2-text: #FBBF24;
+    --p2-border: rgba(251, 191, 36, 0.35);
+
+    --p3-bg: rgba(37, 99, 235, 0.16);
+    --p3-text: #60A5FA;
+    --p3-border: rgba(96, 165, 250, 0.35);
+
+    --p4-bg: rgba(71, 85, 105, 0.22);
+    --p4-text: #94A3B8;
+    --p4-border: rgba(148, 163, 184, 0.3);
+
+    /* SLA Badges (Dark Mode) */
+    --sla-ontrack-bg: rgba(5, 150, 105, 0.16);
+    --sla-ontrack-text: #34D399;
+    --sla-ontrack-border: rgba(52, 211, 153, 0.35);
+
+    --sla-atrisk-bg: rgba(217, 119, 6, 0.16);
+    --sla-atrisk-text: #FBBF24;
+    --sla-atrisk-border: rgba(251, 191, 36, 0.35);
+
+    --sla-breach-bg: rgba(220, 38, 38, 0.22);
+    --sla-breach-text: #F87171;
+    --sla-breach-border: rgba(248, 113, 113, 0.45);
+
+    /* Duplicate Cluster Pill */
+    --dup-bg: rgba(124, 58, 237, 0.2);
+    --dup-text: #C084FC;
+    --dup-border: rgba(192, 132, 252, 0.35);
+
+    /* Table Tokens */
+    --th-bg: #0E1526;
+    --th-text: #CBD5E1;
+    --th-border: #1E293B;
+    --tr-hover: #1A2234;
+    --tr-active: #242E45;
+
+    /* Backward compatibility aliases */
+    --itsm-primary: var(--accent-primary);
+    --itsm-primary-dark: #070A12;
+    --itsm-accent: #3B82F6;
+    --itsm-bg: var(--bg-canvas);
+    --itsm-border: var(--border-subtle);
+    --itsm-text: var(--text-primary);
+    --itsm-muted: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   2. Global Typography & Core Reset
+   -------------------------------------------------------------------------- */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono {
+    font-family: 'JetBrains Mono', Consolas, "Liberation Mono", Menlo, Courier, monospace !important;
+}
+
+.fs-xs {
+    font-size: 0.725rem;
+}
+
+.fs-sm {
+    font-size: 0.825rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. Bootstrap Surface Overrides for Theme Consistency
+   -------------------------------------------------------------------------- */
+.card,
+.modal-content,
+.offcanvas,
+.list-group-item,
+.dropdown-menu {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+}
+
+.modal-header,
+.modal-footer,
+.card-header,
+.card-footer,
+.offcanvas-header {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+}
+
+.form-control,
+.form-select {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted) !important;
+}
+
+.input-group-text {
+    background-color: var(--bg-subtle) !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-subtle) !important;
+}
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.nav-tabs {
+    border-bottom-color: var(--border-subtle) !important;
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary) !important;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) var(--border-subtle) transparent !important;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--bg-surface) !important;
+    color: var(--accent-primary) !important;
+    border-color: var(--border-subtle) var(--border-subtle) var(--bg-surface) !important;
+}
+
+[data-theme="dark"] .bg-white {
+    background-color: var(--bg-surface) !important;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: var(--bg-subtle) !important;
+}
+
+[data-theme="dark"] .table-light {
+    --bs-table-bg: var(--th-bg);
+    --bs-table-color: var(--th-text);
+}
+
+[data-theme="dark"] .text-dark {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Header & Top Navigation Bar
+   -------------------------------------------------------------------------- */
+.navbar-itsm {
+    background-color: var(--sidebar-bg);
+    border-bottom: 1px solid var(--border-subtle);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand-title {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    font-size: 1.15rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. Instant Theme Toggle Button (Header & Login)
+   -------------------------------------------------------------------------- */
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   6. Clean Centered Login Card & Demo Table
+   -------------------------------------------------------------------------- */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background-color: var(--bg-canvas);
+}
+
+.login-card {
+    max-width: 460px;
+    width: 100%;
+    margin: 3.5rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+#loginSubmitBtn {
+    background-color: #0F172A;
+    border-color: #0F172A;
+    color: #FFFFFF;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+#loginSubmitBtn:hover {
+    background-color: #1E293B;
+    border-color: #1E293B;
+}
+
+[data-theme="dark"] #loginSubmitBtn {
+    background-color: #1E293B;
+    border-color: #334155;
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] #loginSubmitBtn:hover {
+    background-color: #334155;
+    border-color: #475569;
+}
+
+.demo-credentials-table {
+    font-size: 0.8rem;
+}
+
+.demo-credentials-table th {
+    background-color: var(--bg-subtle) !important;
+    color: var(--text-secondary) !important;
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.demo-credentials-table td {
+    color: var(--text-primary);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   7. Enterprise Table Typography & High-Density Cells
+   -------------------------------------------------------------------------- */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--text-primary);
+    --bs-table-border-color: var(--border-subtle);
+    --bs-table-hover-bg: var(--tr-hover);
+    color: var(--text-primary);
+    margin-bottom: 0;
+}
+
+.table-dense {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+}
+
+.table-dense th {
+    background-color: var(--th-bg) !important;
+    color: var(--th-text) !important;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-strong) !important;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 9px 12px;
+    white-space: nowrap !important;
+    vertical-align: middle;
+}
+
+.table-dense td {
+    padding: 9px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: var(--tr-hover) !important;
+}
+
+.table-hover tbody tr.table-active td {
+    background-color: var(--tr-active) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Metadata columns with strict nowrap */
+.col-nowrap,
+.table-dense td.col-nowrap {
+    white-space: nowrap !important;
+}
+
+/* Incident Title Column - Clean room without aggressive truncation */
+.incident-title-cell,
+.table-dense td.incident-title-cell {
+    min-width: 300px;
+    max-width: 480px;
+    line-height: 1.4;
+    white-space: normal !important;
+    font-weight: 500;
+    color: var(--text-primary) !important;
+    word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   8. Restrained Semantic Badges, Pills & Monospace Codes
+   -------------------------------------------------------------------------- */
+.code-pill {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap !important;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background-color: var(--bg-subtle);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    letter-spacing: 0.02em;
+}
+
+.service-pill {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap !important;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background-color: var(--bg-subtle);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+/* Common badge pill foundation */
+.badge-status-open,
+.badge-status-in-progress,
+.badge-status-closed,
+.badge-priority-p1,
+.badge-priority-p2,
+.badge-priority-p3,
+.badge-priority-p4,
+.badge-sla-on-track,
+.badge-sla-at-risk,
+.badge-sla-violated,
+.badge-duplicate-cluster {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.35;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap !important;
+}
+
+/* Status Badges */
+.badge-status-open {
+    background-color: var(--status-open-bg);
+    color: var(--status-open-text);
+    border: 1px solid var(--status-open-border);
+}
+
+.badge-status-in-progress {
+    background-color: var(--status-progress-bg);
+    color: var(--status-progress-text);
+    border: 1px solid var(--status-progress-border);
+}
+
+.badge-status-closed {
+    background-color: var(--status-closed-bg);
+    color: var(--status-closed-text);
+    border: 1px solid var(--status-closed-border);
+}
+
+/* Priority Badges */
+.badge-priority-p1 {
+    font-weight: 600;
+    background-color: var(--p1-bg);
+    color: var(--p1-text);
+    border: 1px solid var(--p1-border);
+}
+
+.badge-priority-p2 {
+    background-color: var(--p2-bg);
+    color: var(--p2-text);
+    border: 1px solid var(--p2-border);
+}
+
+.badge-priority-p3 {
+    background-color: var(--p3-bg);
+    color: var(--p3-text);
+    border: 1px solid var(--p3-border);
+}
+
+.badge-priority-p4 {
+    background-color: var(--p4-bg);
+    color: var(--p4-text);
+    border: 1px solid var(--p4-border);
+}
+
+/* SLA Badges (Restrained - no pulsing or flashing animations) */
+.badge-sla-on-track {
+    background-color: var(--sla-ontrack-bg);
+    color: var(--sla-ontrack-text);
+    border: 1px solid var(--sla-ontrack-border);
+}
+
+.badge-sla-at-risk {
+    background-color: var(--sla-atrisk-bg);
+    color: var(--sla-atrisk-text);
+    border: 1px solid var(--sla-atrisk-border);
+}
+
+.badge-sla-violated {
+    font-weight: 600;
+    background-color: var(--sla-breach-bg);
+    color: var(--sla-breach-text);
+    border: 1px solid var(--sla-breach-border);
+}
+
+/* Duplicate Cluster Badge */
+.badge-duplicate-cluster {
+    background-color: var(--dup-bg);
+    color: var(--dup-text);
+    border: 1px solid var(--dup-border);
+}
+
+/* --------------------------------------------------------------------------
+   9. Clean Minimal KPI Ribbon (Flat Clean Stat Blocks)
+   -------------------------------------------------------------------------- */
+.kpi-ribbon {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 1200px) {
+    .kpi-ribbon {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .kpi-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.kpi-ribbon-item {
+    padding: 12px 16px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.kpi-ribbon-item:hover {
+    border-color: var(--border-strong);
+    background-color: var(--bg-hover);
+}
+
+.kpi-ribbon-item .kpi-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.kpi-ribbon-item .kpi-val {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Legacy KPI card support */
+.kpi-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    align-items: center;
+    box-shadow: none;
+}
+
+.kpi-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-right: 0.85rem;
+}
+
+.kpi-val {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------------------------------------
+   10. Sleek Compact Single-Line Inline Filter Bar & SLA Action
+   -------------------------------------------------------------------------- */
+.inline-filter-bar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+.filter-select {
+    width: auto;
+    min-width: 130px;
+    max-width: 190px;
+    font-size: 0.8rem;
+    height: 32px;
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+    border-radius: 4px;
+}
+
+.btn-sla-check {
+    background: #1E293B;
+    color: #F8FAFC;
+    border: 1px solid #334155;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-sla-check:hover {
+    background: #334155;
+    color: #FFFFFF;
+    border-color: #475569;
+}
+
+[data-theme="light"] .btn-sla-check {
+    background: #0F172A;
+    color: #F8FAFC;
+    border-color: #0F172A;
+}
+
+[data-theme="light"] .btn-sla-check:hover {
+    background: #1E293B;
+    color: #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   11. Technician Workspace Split Layout
+   -------------------------------------------------------------------------- */
+.tech-split-container {
+    height: calc(100vh - 145px);
+}
+
+.tech-queue-panel {
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+}
+
+.tech-inspector-panel {
+    height: 100%;
+    overflow-y: auto;
+    background: var(--bg-surface);
+    padding: 1.25rem;
+}
+
+.notes-stream {
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.375rem;
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 0.6rem;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   12. Administrator Sidebar Layout
+   -------------------------------------------------------------------------- */
+.admin-layout-container {
+    display: flex;
+    min-height: calc(100vh - 56px);
+}
+
+.admin-sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid var(--border-subtle);
+}
+
+.admin-sidebar-nav {
+    padding: 1rem 0;
+}
+
+.admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--sidebar-text);
+    opacity: 0.8;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+    border-left: 3px solid transparent;
+}
+
+.admin-nav-item:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
+    opacity: 1;
+}
+
+.admin-nav-item.active {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+    border-left-color: var(--accent-primary);
+    opacity: 1;
+}
+
+.admin-sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.admin-content {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-x: auto;
+    background-color: var(--bg-canvas);
+}
+
+/* --------------------------------------------------------------------------
+   13. Email Outbox Monospace Viewer & Drawer
+   -------------------------------------------------------------------------- */
+.email-raw-viewer {
+    background-color: #070A12;
+    color: #38bdf8;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 0.825rem;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    line-height: 1.5;
+    max-height: 480px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    border: 1px solid var(--border-subtle);
+}
+
+.email-meta-label {
+    color: #94a3b8;
+    width: 70px;
+    display: inline-block;
+}
+
+.notification-card {
+    border-left: 4px solid var(--accent-primary);
+    background-color: var(--bg-surface);
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-subtle);
+    border-left-width: 4px;
+}
+
+.notification-card.unread {
+    border-left-color: #DC2626;
+    background-color: var(--bg-subtle);
+}
+
+/* Rating Stars */
+.star-rating .bi-star-fill,
+.star-rating .bi-star {
+    font-size: 1.5rem;
+    color: #f59e0b;
+    cursor: pointer;
+    margin-right: 0.25rem;
+}

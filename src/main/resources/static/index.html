@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-ITSM Enterprise — Intelligent IT Service Management</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom Application CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Instant Theme Initializer (Prevents Theme Flash) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('itsm_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- ========================================================================= -->
+    <!-- 1. TRADITIONAL LOGIN VIEW (5A Choice 2)                                   -->
+    <!-- ========================================================================= -->
+    <div id="loginView" class="login-wrapper position-relative">
+        <!-- Login Theme Toggle Button -->
+        <div class="position-absolute top-0 end-0 p-3">
+            <button id="loginThemeToggleBtn" class="btn btn-sm btn-outline-secondary theme-toggle-btn" type="button" title="Toggle Light / Dark Mode">
+                <i class="bi bi-moon me-1"></i> <span class="theme-label">Dark</span>
+            </button>
+        </div>
+
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded mb-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-shield-check fs-4"></i>
+                </div>
+                <h4 class="fw-bold mb-1">I-ITSM Enterprise</h4>
+                <p class="text-muted fs-sm mb-0">Intelligent IT Service Management & Resolution Platform</p>
+            </div>
+
+            <div id="loginAlert" class="alert alert-danger py-2 fs-sm d-none" role="alert"></div>
+
+            <form id="loginForm" onsubmit="return false;">
+                <div class="mb-3">
+                    <label for="loginUserId" class="form-label fs-sm fw-medium">User ID Code or Corporate Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="loginUserId" placeholder="e.g., E101, T101, A001" required>
+                        <input type="hidden" id="loginIdentifier">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="loginPassword" class="form-label fs-sm fw-medium">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" id="loginSubmitBtn" class="btn btn-primary w-100 fw-medium py-2">
+                    Sign In to I-ITSM
+                </button>
+            </form>
+
+            <div class="mt-4 pt-3 border-top">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-semibold text-secondary fs-xs text-uppercase tracking-wider">Demo Reference Credentials</span>
+                    <span class="badge bg-light text-secondary border fs-xs">Live Testing Accounts</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm demo-credentials-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>ID</th>
+                                <th>Name / Specialty</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge bg-primary fs-xs">Employee</span></td>
+                                <td class="font-mono fw-semibold">E101</td>
+                                <td>Alice Johnson (Finance)</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('E101', 'password123')">Fill</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-primary fs-xs">Employee</span></td>
+                                <td class="font-mono fw-semibold">E102</td>
+                                <td>Bob Smith (Marketing)</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('E102', 'password123')">Fill</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-primary fs-xs">Employee</span></td>
+                                <td class="font-mono fw-semibold">E103</td>
+                                <td>Priya Patel (Operations & HR)</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('E103', 'password123')">Fill</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-info text-dark fs-xs">Technician</span></td>
+                                <td class="font-mono fw-semibold">T101</td>
+                                <td>Charlie Davis (Network/Cloud)</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('T101', 'password123')">Fill</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-info text-dark fs-xs">Technician</span></td>
+                                <td class="font-mono fw-semibold">T102</td>
+                                <td>Diana Prince (Database/Apps)</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('T102', 'password123')">Fill</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-info text-dark fs-xs">Technician</span></td>
+                                <td class="font-mono fw-semibold">T103</td>
+                                <td>Evan Wright (Hardware/Auth)</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('T103', 'password123')">Fill</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger fs-xs">Administrator</span></td>
+                                <td class="font-mono fw-semibold">A001</td>
+                                <td>Sarah Connor (System Admin)</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-xs" onclick="fillLoginForm('A001', 'adminPassword123')">Fill</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 2. MAIN APP SHELL (Visible when logged in)                                -->
+    <!-- ========================================================================= -->
+    <div id="appShell" class="d-none">
+
+        <!-- Top Global Header -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-itsm px-3 py-2 sticky-top">
+            <div class="container-fluid px-0">
+                <div class="d-flex align-items-center">
+                    <span class="navbar-brand-title text-white me-2">
+                        <i class="bi bi-shield-check text-primary me-1"></i> I-ITSM Enterprise
+                    </span>
+                    <span id="headerRoleBadge" class="badge bg-secondary fs-xs">ROLE</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Top Navigation Theme Toggle Button -->
+                    <button id="themeToggleBtn" class="btn btn-outline-light btn-sm theme-toggle-btn px-2 py-1" type="button" title="Toggle Light / Dark Mode">
+                        <i class="bi bi-moon-stars-fill me-1"></i> <span class="theme-label d-none d-sm-inline">Dark</span>
+                    </button>
+
+                    <!-- Notification Bell (5D-1 Mechanism 1: DASHBOARD) -->
+                    <button id="notifBellBtn" class="btn btn-outline-light btn-sm position-relative px-2 py-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#notificationsOffcanvas">
+                        <i class="bi bi-bell-fill"></i>
+                        <span id="unreadNotifCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger fs-xs d-none">0</span>
+                    </button>
+
+                    <!-- Active User Info -->
+                    <div class="d-flex align-items-center text-light fs-sm">
+                        <i class="bi bi-person-circle fs-5 me-2 text-info"></i>
+                        <div>
+                            <span id="headerUserName" class="fw-semibold">User Name</span>
+                            <span id="headerUserCode" class="text-muted fs-xs font-mono ms-1">(E101)</span>
+                        </div>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <button id="logoutBtn" class="btn btn-outline-danger btn-sm px-2 py-1">
+                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ===================================================================== -->
+        <!-- 3. EMPLOYEE WORKSPACE (5C Option 1: Top Horizontal Tabs)              -->
+        <!-- ===================================================================== -->
+        <div id="employeeWorkspace" class="container-fluid px-4 py-3 d-none">
+            <!-- Nav Tabs -->
+            <ul class="nav nav-tabs mb-3" id="employeeTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-medium" id="empTabIncidentsBtn" data-bs-toggle="tab" data-bs-target="#empIncidentsTab" type="button" role="tab">
+                        <i class="bi bi-card-list me-1"></i> My Submitted Incidents
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-medium" id="empTabReportBtn" data-bs-toggle="tab" data-bs-target="#empReportTab" type="button" role="tab">
+                        <i class="bi bi-plus-circle me-1"></i> Report New Incident
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="employeeTabsContent">
+                <!-- Tab 1: My Incidents Table -->
+                <div class="tab-pane fade show active" id="empIncidentsTab" role="tabpanel">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold fs-sm text-secondary">My Reported Incidents Queue</span>
+                            <button id="empRefreshBtn" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-dense mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket Code</th>
+                                        <th>Title</th>
+                                        <th>Affected Service</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Duplicate Cluster</th>
+                                        <th>Assigned Tech</th>
+                                        <th>SLA Status</th>
+                                        <th>Resolution Summary</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="empIncidentsTbody">
+                                    <tr>
+                                        <td colspan="11" class="text-center py-4 text-muted">Loading your incidents...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Report Incident Form -->
+                <div class="tab-pane fade" id="empReportTab" role="tabpanel">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card shadow-sm border-0 p-4">
+                                <div class="mb-3">
+                                    <h5 class="fw-bold mb-1">Report an IT Incident</h5>
+                                    <p class="text-muted fs-sm mb-0">Submit an issue for automated classification, priority scoring, and instant technician assignment.</p>
+                                </div>
+
+                                <div id="empReportSuccessBox" class="alert alert-success fs-sm d-none mb-3" role="alert"></div>
+                                <div id="empReportErrorBox" class="alert alert-danger fs-sm d-none mb-3" role="alert"></div>
+
+                                <form id="empReportForm">
+                                    <div class="mb-3">
+                                        <label for="reportTitle" class="form-label fs-sm fw-medium">Incident Summary / Title <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="reportTitle" placeholder="e.g., VPN connection drop or Payment gateway timeout" required>
+                                    </div>
+
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6">
+                                            <label for="reportService" class="form-label fs-sm fw-medium">Affected IT Service <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="reportService" required>
+                                                <option value="">Select Service...</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="reportCategory" class="form-label fs-sm fw-medium">Incident Category</label>
+                                            <select class="form-select" id="reportCategory">
+                                                <option value="">Use Service Default Category</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="autoClassifyHint" class="form-text fs-xs text-muted mb-3">
+                                        <i class="bi bi-shield-check text-primary me-1"></i> Impact and Urgency are automatically determined from service business criticality and symptom analysis.
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="reportDescription" class="form-label fs-sm fw-medium">Detailed Symptom Description <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="reportDescription" rows="4" placeholder="Provide complete error messages, steps to reproduce, and symptoms..." required></textarea>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                                        <button type="submit" id="empSubmitReportBtn" class="btn btn-primary fw-semibold px-4">
+                                            <i class="bi bi-send me-1"></i> Submit & Auto-Assign
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- 4. TECHNICIAN WORKSPACE (5C Option 2: Split-Screen Master-Detail)    -->
+        <!-- ===================================================================== -->
+        <div id="technicianWorkspace" class="container-fluid px-3 py-2 d-none">
+            <!-- Top Summary Strip -->
+            <div class="card shadow-sm border-0 mb-2 py-2 px-3">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div>
+                            <span class="fs-xs text-muted text-uppercase fw-semibold d-block">Technician Profile</span>
+                            <span id="techSummaryName" class="fw-bold fs-sm">Charlie Davis</span>
+                            <span id="techSummaryCode" class="font-mono fs-xs text-muted ms-1">(T101)</span>
+                        </div>
+                        <div class="border-start ps-3">
+                            <span class="fs-xs text-muted text-uppercase fw-semibold d-block">Skills Profile</span>
+                            <div id="techSkillsBadges" class="d-flex gap-1 flex-wrap">
+                                <span class="badge bg-secondary fs-xs">Loading skills...</span>
+                            </div>
+                        </div>
+                        <div class="border-start ps-3">
+                            <span class="fs-xs text-muted text-uppercase fw-semibold d-block">Experience</span>
+                            <span id="techExpYears" class="badge bg-light text-dark border fs-xs">0 Years</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-4">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fs-xs text-muted text-uppercase fw-semibold">Current Workload</span>
+                                <span id="techWorkloadRatio" class="fs-xs fw-bold font-mono">0 / 5</span>
+                            </div>
+                            <div class="progress" style="width: 140px; height: 8px;">
+                                <div id="techWorkloadBar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div id="techAvailabilityBadge" class="badge bg-success py-2 px-3 fs-xs">Available</div>
+                        <button id="techRefreshQueueBtn" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Split-Screen Master-Detail Layout -->
+            <div class="row g-2 tech-split-container">
+                <!-- LEFT PANEL (55% width): Queue -->
+                <div class="col-lg-7 h-100">
+                    <div class="card shadow-sm border-0 h-100 d-flex flex-column">
+                        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center border-bottom">
+                            <span class="fw-semibold fs-sm text-secondary">My Assigned Incidents Queue</span>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-primary active" id="techFilterActiveBtn">Active (IN_PROGRESS)</button>
+                                <button type="button" class="btn btn-outline-primary" id="techFilterAllBtn">All Assigned</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive flex-grow-1 tech-queue-panel">
+                            <table class="table table-hover table-dense mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Title</th>
+                                        <th>Service</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Cluster/Dup</th>
+                                        <th>SLA Deadline</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="techQueueTbody">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-muted">Loading assigned tickets...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT PANEL (45% width): Inspector -->
+                <div class="col-lg-5 h-100">
+                    <div class="card shadow-sm border-0 h-100 tech-inspector-panel d-flex flex-column">
+                        <div id="techInspectorEmpty" class="text-center py-5 my-auto text-muted">
+                            <i class="bi bi-arrow-left-circle fs-1 d-block mb-2 text-secondary"></i>
+                            <h6 class="fw-bold">No Incident Selected</h6>
+                            <p class="fs-sm mb-0">Select an incident from your queue on the left to inspect, investigate notes, consult historical solutions, and resolve.</p>
+                        </div>
+
+                        <div id="techInspectorContent" class="d-none">
+                            <!-- Ticket Header -->
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <span id="inspCode" class="badge bg-dark font-mono fs-sm me-1">INC-XXXX</span>
+                                    <span id="inspStatusBadge" class="badge badge-status-in-progress fs-xs">IN_PROGRESS</span>
+                                    <span id="inspPriorityBadge" class="badge badge-priority-p1 fs-xs ms-1">P1</span>
+                                </div>
+                                <span id="inspSlaBadge" class="badge badge-sla-on-track fs-xs">ON_TRACK</span>
+                            </div>
+
+                            <h6 id="inspTitle" class="fw-bold mb-1">Ticket Title</h6>
+                            <p id="inspDescription" class="text-muted fs-xs mb-2 p-2 bg-light rounded"></p>
+
+                            <!-- Meta Grid -->
+                            <div class="row g-1 fs-xs mb-3 text-secondary border-bottom pb-2">
+                                <div class="col-6"><strong>Reporter:</strong> <span id="inspReporter">N/A</span></div>
+                                <div class="col-6"><strong>Service:</strong> <span id="inspService">N/A</span></div>
+                                <div class="col-6"><strong>Category:</strong> <span id="inspCategory">N/A</span></div>
+                                <div class="col-6"><strong>Resolution SLA:</strong> <span id="inspResolutionDeadline">N/A</span></div>
+                            </div>
+
+                            <!-- Duplicate Warning Banner (Feature A) -->
+                            <div id="inspDuplicateWarning" class="alert alert-warning py-2 px-3 fs-xs mb-3 d-none">
+                                <i class="bi bi-diagram-3-fill me-1"></i>
+                                <strong>Part of Duplicate Cluster</strong> (Master: <span id="inspMasterCode"></span>).<br>
+                                Resolving this ticket will <strong>automatically cascade closure</strong> to all linked duplicate tickets!
+                            </div>
+
+                            <!-- Section A: Investigation Notes -->
+                            <div class="mb-3">
+                                <span class="fw-semibold fs-xs text-uppercase text-secondary d-block mb-1">Investigation Notes</span>
+                                <div id="inspNotesStream" class="notes-stream mb-2">No notes recorded yet.</div>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" id="inspNoteInput" class="form-control" placeholder="Add investigation finding...">
+                                    <button class="btn btn-outline-primary" id="inspAddNoteBtn" type="button">Append Note</button>
+                                </div>
+                            </div>
+
+                            <!-- Section B: Intelligent Feature G Historical Solutions -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold fs-xs text-uppercase text-secondary">
+                                        <i class="bi bi-lightbulb-fill text-warning me-1"></i> Historical Resolution Recommendations (Feature G)
+                                    </span>
+                                    <span id="inspHistoricalCount" class="badge bg-light text-secondary border fs-xs">0 available</span>
+                                </div>
+                                <div class="table-responsive border rounded" style="max-height: 160px; overflow-y: auto;">
+                                    <table class="table table-sm table-dense mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Match</th>
+                                                <th>Solution Summary</th>
+                                                <th class="text-end">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="inspHistoricalTbody">
+                                            <tr><td colspan="3" class="text-center py-2 text-muted fs-xs">Querying historical solutions...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Section C: Resolve & Close -->
+                            <div class="mt-auto pt-2 border-top">
+                                <label for="inspResolutionDetails" class="form-label fs-xs fw-semibold text-uppercase text-secondary mb-1">
+                                    Resolution Details (Completes Ticket & Duplicates)
+                                </label>
+                                <textarea id="inspResolutionDetails" class="form-control form-control-sm mb-2" rows="2" placeholder="Document root cause, actions taken, and verification..."></textarea>
+                                <button id="inspResolveBtn" class="btn btn-success btn-sm w-100 fw-semibold">
+                                    <i class="bi bi-check2-circle me-1"></i> Resolve & Close Incident (Cascade Duplicates)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- 5. ADMINISTRATOR WORKSPACE (5C Option 3: Fixed Left Sidebar)          -->
+        <!-- ===================================================================== -->
+        <div id="adminWorkspace" class="admin-layout-container d-none">
+            <!-- Fixed Left Sidebar (240px) -->
+            <div class="admin-sidebar">
+                <div class="admin-sidebar-nav">
+                    <div class="px-3 mb-3">
+                        <span class="fs-xs text-uppercase text-muted fw-bold tracking-wider">Operations Console</span>
+                    </div>
+                    <a href="#" class="admin-nav-item active" id="adminNavIncidents" onclick="switchAdminView('incidents', event)">
+                        <i class="bi bi-grid-3x3-gap"></i> Global Incidents
+                    </a>
+                    <a href="#" class="admin-nav-item" id="adminNavSla" onclick="switchAdminView('sla', event)">
+                        <i class="bi bi-alarm"></i> SLA Monitor
+                    </a>
+                    <a href="#" class="admin-nav-item" id="adminNavTechs" onclick="switchAdminView('techs', event)">
+                        <i class="bi bi-people"></i> Technician Workloads
+                    </a>
+                    <a href="#" class="admin-nav-item" id="adminNavAudit" onclick="switchAdminView('audit', event)">
+                        <i class="bi bi-clock-history"></i> System Audit Trail
+                    </a>
+                    <a href="#" class="admin-nav-item" id="adminNavEmails" onclick="switchAdminView('emails', event)">
+                        <i class="bi bi-envelope-paper"></i> Simulated Email Outbox
+                    </a>
+                </div>
+
+                <!-- Sidebar Footer Action -->
+                <div class="admin-sidebar-footer">
+                    <button id="adminRunSlaBtn" class="btn btn-sla-check w-100 btn-sm">
+                        <i class="bi bi-clock-history me-1"></i> Run SLA Check
+                    </button>
+                    <small class="text-muted fs-xs d-block text-center mt-2">Continuous SLA Monitor (Feature 4C)</small>
+                </div>
+            </div>
+
+            <!-- Right Main Data Workspace -->
+            <div class="admin-content">
+
+                <!-- VIEW 1: Global Incidents & Multi-Criteria Filter -->
+                <div id="adminViewIncidents">
+                    <!-- KPI Metric Ribbon Strip (6-Column Horizontal Ribbon) -->
+                    <div class="kpi-ribbon mb-3">
+                        <div class="kpi-ribbon-item">
+                            <span class="kpi-label">Total Incidents</span>
+                            <span id="kpiTotal" class="kpi-val font-mono">0</span>
+                        </div>
+                        <div class="kpi-ribbon-item">
+                            <span class="kpi-label">Open (Unassigned)</span>
+                            <span id="kpiOpen" class="kpi-val font-mono">0</span>
+                        </div>
+                        <div class="kpi-ribbon-item">
+                            <span class="kpi-label">In Progress</span>
+                            <span id="kpiInProgress" class="kpi-val font-mono">0</span>
+                        </div>
+                        <div class="kpi-ribbon-item">
+                            <span class="kpi-label">Closed / Resolved</span>
+                            <span id="kpiClosed" class="kpi-val font-mono">0</span>
+                        </div>
+                        <div class="kpi-ribbon-item">
+                            <span class="kpi-label">SLA Breached</span>
+                            <span id="kpiSlaViolated" class="kpi-val font-mono">0</span>
+                        </div>
+                        <div class="kpi-ribbon-item">
+                            <span class="kpi-label">Duplicates</span>
+                            <span id="kpiDuplicates" class="kpi-val font-mono">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Sleek Single-Line Inline Filter Bar -->
+                    <div class="inline-filter-bar mb-3 p-2 px-3">
+                        <div class="d-flex flex-wrap align-items-center gap-2 w-100">
+                            <span class="fs-xs fw-semibold text-uppercase text-muted me-1 d-flex align-items-center gap-1">
+                                <i class="bi bi-funnel"></i> Filters:
+                            </span>
+                            <select id="filterStatus" class="form-select form-select-sm filter-select">
+                                <option value="">Status: All</option>
+                                <option value="OPEN">Open</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="CLOSED">Closed</option>
+                            </select>
+                            <select id="filterPriority" class="form-select form-select-sm filter-select">
+                                <option value="">Priority: All</option>
+                                <option value="P1_CRITICAL">P1 - Critical</option>
+                                <option value="P2_HIGH">P2 - High</option>
+                                <option value="P3_MEDIUM">P3 - Medium</option>
+                                <option value="P4_LOW">P4 - Low</option>
+                            </select>
+                            <select id="filterService" class="form-select form-select-sm filter-select">
+                                <option value="">Service: All</option>
+                            </select>
+                            <select id="filterCategory" class="form-select form-select-sm filter-select">
+                                <option value="">Category: All</option>
+                            </select>
+                            <select id="filterTechnician" class="form-select form-select-sm filter-select">
+                                <option value="">Technician: All</option>
+                            </select>
+                            <div class="ms-auto d-flex align-items-center gap-2">
+                                <button id="applyFiltersBtn" class="btn btn-primary btn-sm px-3 fw-semibold d-flex align-items-center gap-1">
+                                    <i class="bi bi-check2"></i> Apply
+                                </button>
+                                <button id="resetFiltersBtn" class="btn btn-outline-secondary btn-sm px-2" title="Reset Filters">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Master Incidents Table -->
+                    <div class="card shadow-sm border-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-dense mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Title</th>
+                                        <th>Reporter</th>
+                                        <th>Service</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Duplicate Cluster</th>
+                                        <th>Assigned Tech</th>
+                                        <th>SLA Status</th>
+                                        <th>Created At</th>
+                                        <th class="text-end">Audit</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminIncidentsTbody">
+                                    <tr><td colspan="11" class="text-center py-4 text-muted">Loading enterprise incidents...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: SLA Monitor & Deadlines -->
+                <div id="adminViewSla" class="d-none">
+                    <div class="card shadow-sm border-0 mb-3 p-3 d-flex flex-row justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold mb-0">Continuous SLA Monitoring & Enforcement Engine</h6>
+                            <small class="text-muted">Assesses active incidents against Response and Resolution targets every 30 seconds.</small>
+                        </div>
+                        <button class="btn btn-warning btn-sm fw-semibold text-dark" onclick="triggerSlaCheck()">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> Run SLA Check Now
+                        </button>
+                    </div>
+
+                    <div class="card shadow-sm border-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-dense mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Title</th>
+                                        <th>Service</th>
+                                        <th>Tech</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
+                                        <th>Response Target</th>
+                                        <th>Resolution Target</th>
+                                        <th>Acknowledged At</th>
+                                        <th>Breached?</th>
+                                        <th>SLA Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminSlaTbody">
+                                    <tr><td colspan="11" class="text-center py-4 text-muted">Loading SLA status...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: Technician Workloads & Skills -->
+                <div id="adminViewTechs" class="d-none">
+                    <div class="card shadow-sm border-0 mb-3 p-3">
+                        <h6 class="fw-bold mb-0">Technician Capacity & Skills Allocation</h6>
+                        <small class="text-muted">Dynamic workload balancing monitored by SmartCascadingAssignmentStrategy.</small>
+                    </div>
+
+                    <div class="card shadow-sm border-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-dense mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Skills</th>
+                                        <th>Experience</th>
+                                        <th>Current Workload / Capacity</th>
+                                        <th>Availability</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminTechsTbody">
+                                    <tr><td colspan="7" class="text-center py-4 text-muted">Loading technicians...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 4: System Audit Trail -->
+                <div id="adminViewAudit" class="d-none">
+                    <div class="card shadow-sm border-0 mb-3 p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold mb-0">System-Wide Immutable Audit Trail</h6>
+                                <small class="text-muted">Tracks every lifecycle transition, SLA alert, note, and assignment event.</small>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="adminAuditSearch" class="form-control" placeholder="Search by ticket code or action (e.g. INC-1001, SLA_VIOLATED)...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0">
+                        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                            <table class="table table-hover table-dense mb-0 align-middle">
+                                <thead class="sticky-top bg-light">
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Incident Code</th>
+                                        <th>Action</th>
+                                        <th>State Transition</th>
+                                        <th>Actor</th>
+                                        <th>Audit Log Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminAuditTbody">
+                                    <tr><td colspan="6" class="text-center py-4 text-muted">Loading audit logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 5: Simulated Email Outbox (5D-1 Mechanism 2) -->
+                <div id="adminViewEmails" class="d-none">
+                    <div class="card shadow-sm border-0 mb-3 p-3">
+                        <h6 class="fw-bold mb-0">Simulated Email Outbox (Notification Mechanism 2)</h6>
+                        <small class="text-muted">Audit trail of all simulated enterprise emails dispatched across lifecycle events.</small>
+                    </div>
+
+                    <div class="row g-3">
+                        <!-- Left List (50%) -->
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0" style="max-height: 540px; overflow-y: auto;">
+                                <table class="table table-hover table-dense mb-0 align-middle">
+                                    <thead class="sticky-top bg-light">
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Ticket</th>
+                                            <th>Event Type</th>
+                                            <th>Recipient</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminEmailsTbody">
+                                        <tr><td colspan="4" class="text-center py-4 text-muted">Loading simulated emails...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Right Monospace Viewer (50%) -->
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 p-3 h-100">
+                                <span class="fw-semibold fs-xs text-uppercase text-secondary mb-2">Simulated Email Console View</span>
+                                <div id="adminEmailPreview" class="email-raw-viewer flex-grow-1">Select an email record from the list to view the full simulated email output.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 6. NOTIFICATION OFFCANVAS DRAWER (5D-1 Mechanism 1: DASHBOARD)            -->
+    <!-- ========================================================================= -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="notificationsOffcanvas" aria-labelledby="notificationsOffcanvasLabel" style="width: 420px;">
+        <div class="offcanvas-header border-bottom py-2">
+            <div>
+                <h6 class="offcanvas-title fw-bold" id="notificationsOffcanvasLabel">In-App Notifications</h6>
+                <small class="text-muted fs-xs">Dashboard Channel Alerts</small>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-3" id="notificationsListContainer">
+            <div class="text-center py-4 text-muted">Loading notifications...</div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 7. REUSABLE MODALS                                                        -->
+    <!-- ========================================================================= -->
+
+    <!-- Rate & Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h6 class="modal-title fw-bold">Customer Satisfaction Rating & Feedback</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-sm text-muted mb-3">Provide feedback on the resolution of incident <strong id="feedbackIncidentCode" class="font-mono"></strong>.</p>
+                    <div class="mb-3 text-center">
+                        <label class="form-label fs-xs fw-semibold text-uppercase text-muted d-block">Satisfaction Rating</label>
+                        <div class="star-rating d-inline-flex" id="starRatingContainer">
+                            <i class="bi bi-star" data-val="1"></i>
+                            <i class="bi bi-star" data-val="2"></i>
+                            <i class="bi bi-star" data-val="3"></i>
+                            <i class="bi bi-star" data-val="4"></i>
+                            <i class="bi bi-star" data-val="5"></i>
+                        </div>
+                        <input type="hidden" id="feedbackRatingValue" value="5">
+                        <div id="feedbackRatingLabel" class="fs-xs fw-bold text-warning mt-1">5 / 5 - Excellent</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="feedbackComments" class="form-label fs-sm fw-medium">Comments</label>
+                        <textarea id="feedbackComments" class="form-control" rows="3" placeholder="Explain your experience with the resolution..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="submitFeedbackBtn" class="btn btn-sm btn-primary fw-semibold">Submit Rating</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reopen Incident Modal -->
+    <div class="modal fade" id="reopenModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h6 class="modal-title fw-bold">Reopen Closed Incident</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-sm text-muted mb-2">Reopen incident <strong id="reopenIncidentCode" class="font-mono"></strong> back to <span class="badge badge-status-in-progress">IN_PROGRESS</span>.</p>
+                    <div class="mb-3">
+                        <label for="reopenReason" class="form-label fs-sm fw-medium">Reason for Reopening <span class="text-danger">*</span></label>
+                        <textarea id="reopenReason" class="form-control" rows="3" placeholder="Explain why the issue recurred or remains unresolved..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="submitReopenBtn" class="btn btn-sm btn-danger fw-semibold">Reopen Incident</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit History Modal -->
+    <div class="modal fade" id="auditHistoryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h6 class="modal-title fw-bold">Audit History — <span id="auditModalIncidentCode" class="font-mono text-primary"></span></h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-sm table-dense mb-0">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Action</th>
+                                    <th>State</th>
+                                    <th>Actor</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditModalTbody">
+                                <tr><td colspan="5" class="text-center py-3 text-muted">Loading audit entries...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="appToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Action completed successfully.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Application Logic JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>
